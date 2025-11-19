@@ -1,0 +1,6 @@
+---
+nginx_proxy_listen_port: 80
+nginx_proxy_server_name: "_"
+nginx_proxy_upstream: "http://127.0.0.1:3000"
+nginx_proxy_conf_path: "/etc/nginx/sites-available/nginx_proxy.conf"
+nginx_proxy_conf_enabled_path: "/etc/nginx/sites-enabled/nginx_proxy.conf"

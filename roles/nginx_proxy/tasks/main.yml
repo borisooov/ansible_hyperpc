@@ -1,0 +1,35 @@
+---
+- name: Ensure nginx is installed
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: Ensure nginx service is enabled and running
+  ansible.builtin.service:
+    name: nginx
+    enabled: true
+    state: started
+
+- name: Deploy nginx proxy config (with backup)
+  ansible.builtin.template:
+    src: "nginx_proxy.conf.j2"
+    dest: "{{ nginx_proxy_conf_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true    
+  notify: "Validate and reload nginx"
+
+- name: Enable nginx proxy site (symlink)
+  ansible.builtin.file:
+    src: "{{ nginx_proxy_conf_path }}"
+    dest: "{{ nginx_proxy_conf_enabled_path }}"
+    state: link
+  notify: "Validate and reload nginx"
+
+- name: Disable default nginx site if exists
+  ansible.builtin.file:
+    path: "/etc/nginx/sites-enabled/default"
+    state: absent
+  notify: "Validate and reload nginx"
+  ignore_errors: true
